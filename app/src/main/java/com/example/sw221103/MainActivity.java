@@ -3,14 +3,17 @@ package com.example.sw221103;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,13 +23,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private EditText editTextEmail;
     private EditText editTextPassword;
     private Button buttonLogIn;
     private Button buttonSignUp;
+    private TextView textviewFindPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
         editTextEmail = (EditText) findViewById(R.id.edittext_email);
         editTextPassword = (EditText) findViewById(R.id.edittext_password);
+
+        textviewFindPassword = (TextView) findViewById(R.id.textViewFindpassword);
+        textviewFindPassword.setOnClickListener(this);
 
         buttonSignUp = (Button) findViewById(R.id.btn_join);
         buttonSignUp.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -132,6 +141,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
      */
-
+    public void onClick(View view) {
+        if(view == textviewFindPassword) {
+            finish();
+            startActivity(new Intent(this, FindActivity.class));
+        }
+    }
 
 }

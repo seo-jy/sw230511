@@ -38,4 +38,5 @@
         android:layout_gravity="center_horizontal"
         android:text="Email 발송" />
 
+
 </LinearLayout>
