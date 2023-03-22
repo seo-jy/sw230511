@@ -73,6 +73,10 @@
             android:name=".ChatActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".GoogleActivity"
+            android:exported="false" />
+
         <activity android:name=".DrawActivity"/>
     </application>
 

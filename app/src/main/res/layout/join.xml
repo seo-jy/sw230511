@@ -17,15 +17,16 @@
         android:layout_marginStart="118dp"
         android:layout_marginTop="119dp"
         android:layout_marginEnd="118dp"
-        android:layout_marginBottom="10dp"
         android:fontFamily="@font/fontstyle"
         android:text="회원가입"
         android:textColor="@color/black"
-    android:textSize="50sp"
-    app:layout_constraintBottom_toTopOf="@+id/edittext_email"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/view_line" />
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_line"
+        app:layout_constraintVertical_bias="0.026" />
 
     <View
         android:id="@+id/view_line"
@@ -45,15 +46,16 @@
         android:layout_marginStart="53dp"
         android:layout_marginTop="67dp"
         android:layout_marginEnd="54dp"
-        android:layout_marginBottom="19dp"
         android:background="@drawable/et_line2"
         android:ems="10"
         android:hint="이메일"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/edittext_password"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.282" />
 
     <EditText
         android:id="@+id/edittext_password"
@@ -63,15 +65,16 @@
         android:layout_marginStart="53dp"
 
         android:layout_marginEnd="54dp"
-        android:layout_marginBottom="19dp"
         android:background="@drawable/et_line2"
         android:ems="10"
         android:hint="비밀번호"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/edittext_name"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_email" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.453" />
 
     <EditText
         android:id="@+id/edittext_name"
@@ -80,34 +83,52 @@
         android:layout_gravity="center"
         android:layout_marginStart="53dp"
         android:layout_marginEnd="54dp"
-        android:layout_marginBottom="71dp"
         android:background="@drawable/et_line2"
         android:ems="10"
         android:hint="닉네임"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/btn_join"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/edittext_password" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.549" />
 
     <Button
         android:id="@+id/btn_join"
         android:layout_width="218dp"
         android:layout_height="46dp"
         android:layout_marginStart="96dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="97dp"
-        android:layout_marginBottom="206dp"
         android:background="@drawable/et_line"
         android:fontFamily="@font/fontstyle"
         android:text="가입하기"
         android:textColor="@color/white"
-    android:textSize="18sp"
-    android:textStyle="bold"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/edittext_name" />
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.88" />
+
+    <Button
+        android:id="@+id/btn_check"
+        android:layout_width="218dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="96dp"
+        android:background="@drawable/et_line"
+        android:fontFamily="@font/fontstyle"
+        android:text="인증하기"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.788" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

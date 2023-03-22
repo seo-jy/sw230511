@@ -30,14 +30,24 @@ import android.net.Uri;
 
 public class HomeActivity extends AppCompatActivity{
 
-    private FirebaseAuth firebaseAuth;
-    private Button buttonLogout;
-
+    //private FirebaseAuth firebaseAuth;
+    //private Button buttonLogout;
+    //Button btnRevoke, btnLogout;
+    private FirebaseAuth mAuth ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        //btnLogout = (Button)findViewById(R.id.btn_logout);
+        //btnRevoke = (Button)findViewById(R.id.btn_revoke);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        //btnLogout.setOnClickListener(this);
+        //btnRevoke.setOnClickListener(this);
+
 
 
         Button TODO = (Button) findViewById(R.id.todo);
@@ -106,6 +116,31 @@ public class HomeActivity extends AppCompatActivity{
                 startActivity(myIntent);
             }
         });
-
     }
+
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+    }
+
+    private void revokeAccess() {
+        mAuth.getCurrentUser().delete();
+    }
+
+
+    /*
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_logout:
+                signOut();
+                finishAffinity();
+                break;
+            case R.id.btn_revoke:
+                revokeAccess();
+                finishAffinity();
+                break;
+        }
+    }
+
+     */
 }
