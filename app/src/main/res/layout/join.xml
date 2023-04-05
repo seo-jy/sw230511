@@ -48,7 +48,7 @@
         android:layout_marginEnd="54dp"
         android:background="@drawable/et_line2"
         android:ems="10"
-        android:hint="이메일"
+        android:hint="경북대학교 이메일 주소를 입력해주세요. ex)000.knu.ac.kr"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -111,24 +111,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.88" />
-
-    <Button
-        android:id="@+id/btn_check"
-        android:layout_width="218dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="96dp"
-        android:background="@drawable/et_line"
-        android:fontFamily="@font/fontstyle"
-        android:text="인증하기"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.788" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

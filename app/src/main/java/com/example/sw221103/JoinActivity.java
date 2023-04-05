@@ -23,6 +23,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import android.util.Log;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class JoinActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
@@ -46,16 +49,25 @@ public class JoinActivity extends AppCompatActivity {
         editTextPassword = (EditText) findViewById(R.id.edittext_password);
         editTextName = (EditText) findViewById(R.id.edittext_name);
 
+
+
         buttonJoin = (Button) findViewById(R.id.btn_join);
         buttonJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!editTextEmail.getText().toString().equals("") && !editTextPassword.getText().toString().equals("")) {
-                    // 이메일과 비밀번호가 공백이 아닌 경우
+                String emailPattern = "^[a-zA-Z0-9._%+-]+@knu.ac.kr$";
+                Pattern pattern = Pattern.compile(emailPattern);
+
+                String email = editTextEmail.getText().toString();
+                Matcher matcher = pattern.matcher(email);
+
+                if (matcher.matches()) {
+                    // 이메일 주소가 패턴과 일치합니다.
+                    // TODO: 이메일 주소를 사용하여 인증 등의 작업을 수행합니다.
                     createUser(editTextEmail.getText().toString(), editTextPassword.getText().toString(), editTextName.getText().toString());
                 } else {
-                    // 이메일과 비밀번호가 공백인 경우
-                    Toast.makeText(JoinActivity.this, "계정과 비밀번호를 입력하세요.", Toast.LENGTH_LONG).show();
+                    // 이메일 주소가 패턴과 일치하지 않습니다.
+                    Toast.makeText(JoinActivity.this, "이메일 주소를 올바르게 입력해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
