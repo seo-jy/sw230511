@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int RC_SIGN_IN = 9001;
     private SignInButton signInButton;
     //private FirebaseAuth mAuth = null;
+    private TextView mStatusTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
     }
-
+/*
     public void loginUser(String email, String password) {
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -139,6 +140,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
     }
+
+     */
+
+    private void loginUser(String email, String password) {
+
+        firebaseAuth.signInWithEmailAndPassword(email , password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){ // 계정이 등록이 되어 있으면
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if(user.isEmailVerified()){ // 그리고 그때 그 계정이 실제로 존재하는 계정인지
+                        Log.d("login", "signInWithEmail:success" + user.getEmail());
+                        Toast.makeText(MainActivity.this, "signInWithEmail:success." + user.getEmail(), Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(MainActivity.this , HomeActivity.class);
+                        startActivity(i);
+                        finish();
+                    }else{
+                        Toast.makeText(MainActivity.this, "인증이 되지 않은 이메일입니다 해당 이메일 주소에서 링크를 클릭해주세요", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }else{
+                    Log.d("login", "signInWithEmail:failure", task.getException());
+                    Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
 
 
 

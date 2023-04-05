@@ -78,6 +78,14 @@
             android:exported="false" />
 
         <activity android:name=".DrawActivity"/>
+
+        <activity
+            android:name=".ResultClicked"
+            android:exported="false" />
+
+        <activity
+            android:name=".Emailcheck"
+            android:exported="false" />
     </application>
 
 </manifest>

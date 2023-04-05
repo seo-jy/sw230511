@@ -17,10 +17,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <ListView
                 android:id="@+id/chat_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -28,22 +30,32 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- 이미지 전송 버튼 -->
+            <Button
+                android:id="@+id/image_sent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="그림판" />
+
+            <Button
+                android:id="@+id/chat_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="이미지 보내기" />
+
             <Button
                 android:id="@+id/chat_sent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="send" />
 
-            <Button
-                android:id="@+id/image_sent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="이미지 보내기" />
-
             <EditText
                 android:id="@+id/chat_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+
+
         </LinearLayout>
 
     </LinearLayout>

@@ -78,6 +78,20 @@ public class HomeActivity extends AppCompatActivity{
             }
         });
 
+        /*
+        Button buttonI = (Button) findViewById(R.id.btn_image);
+        buttonI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, ImageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+         */
+
+
+
         Button chat = (Button) findViewById(R.id.chat);
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
