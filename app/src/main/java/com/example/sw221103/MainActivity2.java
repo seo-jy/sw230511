@@ -34,11 +34,11 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity2 extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth firebaseAuth = null;
     private FirebaseAuth.AuthStateListener firebaseAuthListener;
     private EditText editTextEmail;
-    private EditText editTextPassword;
+    private EditText newPasswordEditText;
     private Button buttonLogIn;
     private Button buttonSignUp;
     private Button buttongoogle;
@@ -52,12 +52,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
         editTextEmail = (EditText) findViewById(R.id.edittext_email);
-        editTextPassword = (EditText) findViewById(R.id.edittext_password);
+        newPasswordEditText = findViewById(R.id.new_password_edittext);
 
         textviewFindPassword = (TextView) findViewById(R.id.textViewFindpassword);
         textviewFindPassword.setOnClickListener(this);
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View v) {
                 // SignUpActivity 연결
-                Intent intent = new Intent(MainActivity.this, JoinActivity.class);
+                Intent intent = new Intent(MainActivity2.this, JoinActivity.class);
                 startActivity(intent);
             }
         });
@@ -107,10 +107,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!editTextEmail.getText().toString().equals("") && !editTextPassword.getText().toString().equals("")) {
-                    loginUser(editTextEmail.getText().toString(), editTextPassword.getText().toString());
+                if (!newPasswordEditText.getText().toString().equals("")) {
+                    loginUser(editTextEmail.getText().toString(), newPasswordEditText.getText().toString());
                 } else {
-                    Toast.makeText(MainActivity.this, "계정과 비밀번호를 입력하세요.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity2.this, "계정과 비밀번호를 입력하세요.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    Intent intent = new Intent(MainActivity2.this, HomeActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
@@ -156,26 +156,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(task.isSuccessful()){ // 계정이 등록이 되어 있으면
                     FirebaseUser user = firebaseAuth.getCurrentUser();
                     if(user.isEmailVerified()){ // 그리고 그때 그 계정이 실제로 존재하는 계정인지
+                        EditText newPasswordEditText = findViewById(R.id.new_password_edittext);
+                        String newPassword = newPasswordEditText.getText().toString();
+                        user.updatePassword(newPassword)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, "비밀번호가 업데이트되었습니다.");
+
+                                            // Firebase Realtime Database를 사용하여 사용자 정보를 업데이트합니다.
+                                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+                                            String userId = user.getUid();
+                                            usersRef.child(userId).child("password").setValue(newPassword);
+                                            Toast.makeText(MainActivity2.this,
+                                                    "비밀번호 업데이트 성공. " , Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Log.e(TAG, "비밀번호 업데이트 중 오류가 발생했습니다.", task.getException());
+                                            Toast.makeText(MainActivity2.this,
+                                                    "비밀번호 업데이트 중 오류가 발생했습니다. " , Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                         Log.d("login", "signInWithEmail:success" + user.getEmail());
-                        Toast.makeText(MainActivity.this, "signInWithEmail:success." + user.getEmail(), Toast.LENGTH_SHORT).show();
-                        Intent i = new Intent(MainActivity.this , HomeActivity.class);
+                        Toast.makeText(MainActivity2.this, "signInWithEmail:success." + user.getEmail(), Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(MainActivity2.this , HomeActivity.class);
                         startActivity(i);
                         finish();
                     }else{
-                        Toast.makeText(MainActivity.this, "인증이 되지 않은 이메일입니다 해당 이메일 주소에서 링크를 클릭해주세요",
+                        Toast.makeText(MainActivity2.this, "인증이 되지 않은 이메일입니다 해당 이메일 주소에서 링크를 클릭해주세요",
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
                 }else{
                     Log.d("login", "signInWithEmail:failure", task.getException());
-                    Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity2.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
 
     }
-
 
 
 

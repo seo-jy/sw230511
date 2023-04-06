@@ -1,8 +1,8 @@
 package com.example.sw221103;
 
-import android.accounts.AbstractAccountAuthenticator;
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,31 +10,50 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+public class UserAdapter extends ListAdapter<User1, UserAdapter.UserVH> {
 
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserVH> {
+    private final Context context;
 
-    private Context context;
+    public UserAdapter(Context context) {
+        super(new DiffUtil.ItemCallback<User1>() {
+            @Override
+            public boolean areItemsTheSame(@NonNull User1 oldItem, @NonNull User1 newItem) {
+                return TextUtils.equals(oldItem.getId(), newItem.getId());
+            }
 
-    ArrayList<User1> list = new ArrayList<>();
+            @Override
+            public boolean areContentsTheSame(@NonNull User1 oldItem, @NonNull User1 newItem) {
+                return TextUtils.equals(oldItem.getUid(), newItem.getUid()) &&
+                        TextUtils.equals(oldItem.getUser_key(), newItem.getUser_key()) &&
+                        TextUtils.equals(oldItem.getUser_name(), newItem.getUser_name()) &&
+                        TextUtils.equals(oldItem.getUser_date(), newItem.getUser_date()) &&
+                        TextUtils.equals(oldItem.getUser_order_date(), newItem.getUser_order_date()) &&
+                        TextUtils.equals(oldItem.getUser_password(), newItem.getUser_password());
+            }
 
-    public UserAdapter(Context context, ArrayList<User1> list) {
+            @Override
+            public Object getChangePayload(@NonNull User1 oldItem, @NonNull User1 newItem) {
+                return new Object();
+            }
+        });
+
         this.context = context;
-        this.list = list;
     }
 
     @NonNull
     @Override
-    public UserVH onCreateViewHolder(@NonNull ViewGroup parent,int viewType){
+    public UserVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_item, parent, false);
         return new UserVH(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserAdapter.UserVH holder, int position) {
-        User1 user1 = list.get(holder.getBindingAdapterPosition());
+        User1 user1 = getItem(position);
 
         holder.nameText.setText(user1.getUser_name());
 
@@ -50,15 +69,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserVH> {
                 context.startActivity(intent);
             }
         });
-
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
-
-    class UserVH extends RecyclerView.ViewHolder{
+    static class UserVH extends RecyclerView.ViewHolder {
         TextView nameText;
         CardView cardView;
 

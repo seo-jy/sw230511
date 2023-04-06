@@ -3,6 +3,7 @@ package com.example.sw221103;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,8 +23,12 @@ import java.util.ArrayList;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 
 public class ListActivity extends AppCompatActivity {
-    RecyclerView recyclerView;
-    UserAdapter adapter;
+    private SearchView searchView;
+    private UserAdapter adapter;
+
+    private String title;
+    private String content;
+    private long timestamp;
 
     DAOUser dao;
 
@@ -31,23 +36,45 @@ public class ListActivity extends AppCompatActivity {
 
     ArrayList<User1> list = new ArrayList<>();
 
+    private ValueEventListener listener;
+
+
     @Override
-    protected  void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        recyclerView = findViewById(R.id.rv);
+        RecyclerView recyclerView = findViewById(R.id.rv);
+        searchView = findViewById(R.id.sv);
 
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(manager);
 
-        adapter = new UserAdapter(this, list);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                submitList();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                submitList();
+                return false;
+            }
+        });
+
+
+        adapter = new UserAdapter(this);
 
         recyclerView.setAdapter(adapter);
 
         dao = new DAOUser();
 
+//        mOptions = new FirebaseRecyclerOptions.Builder<User1>()
+//                .setQuery(DatabaseReference, list.class)
+//                .build();
         loadData();
 
 
@@ -92,27 +119,50 @@ public class ListActivity extends AppCompatActivity {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
         }).attachToRecyclerView(recyclerView);
-
     }
 
-    private void loadData(){
-        dao.get().addValueEventListener(new ValueEventListener() {
+    private void loadData() {
+        listener = dao.get().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.clear();
 
-                for(DataSnapshot data:snapshot.getChildren()){
+                for (DataSnapshot data : snapshot.getChildren()) {
                     User1 user1 = data.getValue(User1.class);
+                    user1.setId(data.getKey());
                     key = data.getKey(); // 키값 가져오기
                     user1.setUser_key(key); // 키값 담기
                     list.add(user1); //리스트에 담기
                 }
-                adapter.notifyDataSetChanged();
+
+                submitList();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    private void submitList() {
+        String query = searchView.getQuery().toString();
+        ArrayList<User1> filteredList = new ArrayList<>();
+
+        for (User1 user1 : list) {
+            if (user1.getUser_name().contains(query)) {
+                filteredList.add(user1);
+            }
+        }
+
+        adapter.submitList(new ArrayList<>(filteredList));
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (listener != null) {
+            dao.get().removeEventListener(listener);
+        }
+
+        super.onDestroy();
     }
 }

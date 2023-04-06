@@ -55,6 +55,7 @@ public class FindActivity extends AppCompatActivity implements View.OnClickListe
             progressDialog.show();
             //비밀번호 재설정 이메일 보내기
 
+            /*
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             String emailAddress = editTextUserEmail.getText().toString().trim();
             firebaseAuth.sendPasswordResetEmail(emailAddress)
@@ -73,6 +74,27 @@ public class FindActivity extends AppCompatActivity implements View.OnClickListe
                     });
 
 
+
+             */
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            String emailAddress = editTextUserEmail.getText().toString().trim();
+            firebaseAuth.sendPasswordResetEmail(emailAddress)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(FindActivity.this, "이메일을 보냈습니다.", Toast.LENGTH_LONG).show();
+                                finish();
+                                startActivity(new Intent(getApplicationContext(), MainActivity2.class));
+                            } else {
+                                Toast.makeText(FindActivity.this, "메일 보내기 실패!", Toast.LENGTH_LONG).show();
+                            }
+                            progressDialog.dismiss();
+                        }
+                    });
+
+// 사용자가 새로운 비밀번호를 설정하고 Firebase Authentication에서 사용자 정보를 업데이트합니다.
+// 이 예제에서는 EditText에서 새로운 비밀번호를 가져옵니다.
 
         }
     }
