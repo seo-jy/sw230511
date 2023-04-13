@@ -16,7 +16,7 @@
 
 
 
+![Screenshot_20230413-125805](https://user-images.githubusercontent.com/94457804/231648223-f4003572-df29-4ebb-9df4-5556d6144178.png)
 
 **와이파이에 연결하고 실행해야 로그인, 회원가입 오류가 생기지 않음**!
 
-[Screenshot_20230322-180039](https://user-images.githubusercontent.com/94457804/231647726-5fdaed15-19c1-43fa-9130-088bd9a8483b.png)
