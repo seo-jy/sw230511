@@ -12,18 +12,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_weight="1"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chat_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-            <ListView
-                android:id="@+id/chat_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </LinearLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,6 +37,15 @@
                 android:layout_height="wrap_content"
                 android:text="이미지 보내기" />
 
+            <ImageView
+                android:id="@+id/message_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+
             <Button
                 android:id="@+id/chat_sent"
                 android:layout_width="match_parent"
@@ -53,7 +56,6 @@
                 android:id="@+id/chat_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
-
 
 
         </LinearLayout>

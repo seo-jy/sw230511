@@ -1,51 +1,54 @@
 package com.example.sw221103;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
-//import android.support.v7.app.AppCompatActivity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.sw221103.databinding.ItemChatBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
+import java.util.UUID;
 
-public class ChatActivity extends AppCompatActivity{
+public class ChatActivity extends AppCompatActivity {
 
     private String CHAT_NAME;
     private String USER_NAME;
 
-    private ListView chat_view;
+    private RecyclerView chat_view;
     private EditText chat_edit;
     private Button chat_send;
     private Button chat_image;
+    private Uri selectedImageUri;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
+    private StorageReference storageReference;
+
+    private final ChatAdapter adapter = new ChatAdapter();
 
     private static final int REQUEST_IMAGE = 100;
 
@@ -56,7 +59,7 @@ public class ChatActivity extends AppCompatActivity{
         setContentView(R.layout.activity_chat);
 
         // 위젯 ID 참조
-        chat_view = (ListView) findViewById(R.id.chat_view);
+        chat_view = (RecyclerView) findViewById(R.id.chat_view);
         chat_edit = (EditText) findViewById(R.id.chat_edit);
         chat_send = (Button) findViewById(R.id.chat_sent);
         chat_image = (Button) findViewById(R.id.chat_image);
@@ -73,7 +76,7 @@ public class ChatActivity extends AppCompatActivity{
         chat_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 startActivityForResult(intent, REQUEST_IMAGE);
             }
@@ -95,7 +98,6 @@ public class ChatActivity extends AppCompatActivity{
 
         Button image_sent = (Button) findViewById(R.id.image_sent);
         image_sent.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ChatActivity.this, DrawActivity.class);
@@ -104,79 +106,142 @@ public class ChatActivity extends AppCompatActivity{
         });
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE && resultCode == RESULT_OK && data != null) {
-            // 선택된 이미지를 Firebase Storage에 업로드하고, 업로드된 이미지의 다운로드 URL을 가져오는 코드
+
+        if (requestCode == REQUEST_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri selectedImageUri = data.getData();
+
+            DatabaseReference ref = databaseReference.child("chat").child(CHAT_NAME).push();
+
+            ChatDTO chat = new ChatDTO(USER_NAME, null, selectedImageUri.toString());
+            chat.setId(ref.getKey());
+
+            ArrayList<ChatDTO> messages = new ArrayList(adapter.getCurrentList());
+            messages.add(chat);
+            adapter.submitList(messages);
+
+            // 선택된 이미지를 Firebase Storage에 업로드하고, 업로드된 이미지의 다운로드 URL을 가져오는 코드
             StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("images");
             StorageReference imageRef = storageRef.child(selectedImageUri.getLastPathSegment());
-            UploadTask uploadTask = imageRef.putFile(selectedImageUri);
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("chat_images/" + UUID.randomUUID().toString());
+            storageReference.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             // 업로드된 이미지의 다운로드 URL을 가져오면 채팅 메시지와 함께 Firebase Realtime Database에 업로드하는 코드
-                            ChatDTO chat = new ChatDTO(USER_NAME, uri.toString());
-                            databaseReference.child("chat").child(CHAT_NAME).push().setValue(chat);
+                            chat.setImageUrl(uri.toString());
+                            ref.setValue(chat);
                         }
                     });
                 }
             });
-
-
         }
     }
 
-
-    private void addMessage(DataSnapshot dataSnapshot, ArrayAdapter<String> adapter) {
-        ChatDTO chatDTO = dataSnapshot.getValue(ChatDTO.class);
-        adapter.add(chatDTO.getUserName() + " : " + chatDTO.getMessage());
-    }
-
-    private void removeMessage(DataSnapshot dataSnapshot, ArrayAdapter<String> adapter) {
-        ChatDTO chatDTO = dataSnapshot.getValue(ChatDTO.class);
-        adapter.remove(chatDTO.getUserName() + " : " + chatDTO.getMessage());
-    }
-
     private void openChat(String chatName) {
-        // 리스트 어댑터 생성 및 세팅
-        final ArrayAdapter<String> adapter
-
-                = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
         chat_view.setAdapter(adapter);
 
-        // 데이터 받아오기 및 어댑터 데이터 추가 및 삭제 등..리스너 관리
-        databaseReference.child("chat").child(chatName).addChildEventListener(new ChildEventListener() {
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                addMessage(dataSnapshot, adapter);
-                Log.e("LOG", "s:"+s);
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                try {
+                    chat_view.scrollToPosition(positionStart + itemCount - 1);
+                } catch (Exception ignore) {
+                }
+            }
+        });
+
+        databaseReference.child("chat").child(chatName).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<ChatDTO> messages = new ArrayList<>();
+
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    ChatDTO message = child.getValue(ChatDTO.class);
+
+                    message.setId(child.getKey());
+
+                    String sender = message.getUserName();
+                    String text = message.getMessage();
+                    String chat = sender + " : " + text;
+                    message.setMessage(chat);
+
+                    messages.add(message);
+                }
+
+                adapter.submitList(messages);
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                removeMessage(dataSnapshot, adapter);
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
+    }
+
+
+    private static class ChatAdapter extends ListAdapter<ChatDTO, ChatAdapter.ChatItemViewHolder> {
+
+        public ChatAdapter() {
+            super(new DiffUtil.ItemCallback<ChatDTO>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull ChatDTO oldItem, @NonNull ChatDTO newItem) {
+                    return TextUtils.equals(oldItem.getId(), newItem.getId());
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull ChatDTO oldItem, @NonNull ChatDTO newItem) {
+                    return TextUtils.equals(oldItem.getUserName(), newItem.getUserName()) &&
+                            TextUtils.equals(oldItem.getMessage(), newItem.getMessage());
+                }
+            });
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == RecyclerView.NO_POSITION) return 0;
+
+            if (!TextUtils.isEmpty(getItem(position).getImageUrl())) return 1;
+            return 0;
+        }
+
+        @NonNull
+        @Override
+        public ChatItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            ItemChatBinding binding = ItemChatBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+            if (viewType == 0) {
+                binding.imageView.setVisibility(View.GONE);
+            } else {
+                binding.textView.setVisibility(View.GONE);
+            }
+
+            return new ChatItemViewHolder(binding);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ChatItemViewHolder holder, int position) {
+            ChatDTO data = getItem(position);
+
+            if (data.getImageUrl() != null) {
+                Glide.with(holder.binding.imageView)
+                        .load(data.getImageUrl())
+                        .into(holder.binding.imageView);
+            } else {
+                holder.binding.textView.setText(data.getMessage());
+            }
+        }
+
+        static class ChatItemViewHolder extends RecyclerView.ViewHolder {
+            public final ItemChatBinding binding;
+
+            public ChatItemViewHolder(ItemChatBinding binding) {
+                super(binding.getRoot());
+                this.binding = binding;
+            }
+        }
     }
 }
