@@ -2,6 +2,8 @@
 
 회원가입  - 경북대학교 이메일로만 가능, 회원가입 후 이메일 인증을 해야 홈 화면으로 넘어감
 
+![스크린샷(95)](https://github.com/seo-jy/sw230511/assets/94457804/41722a94-78dd-4767-9daf-6ee0a1b23dcf)
+
 사이렌 - 긴급통화_112에 연결
 
 마이페이지 - home, 비밀번호 변경, 로그아웃, 회원탈퇴 가능
@@ -15,7 +17,7 @@
 지도 - 자신의 위치 확인 가능
 
 
-![스크린샷(95)](https://github.com/seo-jy/sw230511/assets/94457804/41722a94-78dd-4767-9daf-6ee0a1b23dcf)
+
 ![스크린샷(96)](https://github.com/seo-jy/sw230511/assets/94457804/4864a2b9-4e16-481b-9afb-b5f443d551b5)
 ![스크린샷(97)](https://github.com/seo-jy/sw230511/assets/94457804/719b7811-e322-49b9-bec5-ecfd78a05908)
 ![스크린샷(98)](https://github.com/seo-jy/sw230511/assets/94457804/604b7c88-776c-4cf2-9823-6fdff1bb3a3f)
