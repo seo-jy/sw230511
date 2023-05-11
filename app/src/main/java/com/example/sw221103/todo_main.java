@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,7 +62,10 @@ public class todo_main extends AppCompatActivity {
                     String sKey = databaseReference.push().getKey();
 
                     if(sKey != null){
+                        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
                         databaseReference.child(sKey).child("value").setValue(sName);
+                        databaseReference.child(sKey).child("uid").setValue(uid);
 
                         nameEdit.setText("");
                     }
@@ -146,6 +150,7 @@ public class todo_main extends AppCompatActivity {
 
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     String sValue = dataSnapshot.child("value").getValue(String.class);
+                    String sUid = dataSnapshot.child("uid").getValue(String.class);
                     arrayList.add(sValue);
                 }
                 listView.setAdapter(adapter);

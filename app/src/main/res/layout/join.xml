@@ -48,7 +48,7 @@
         android:layout_marginEnd="54dp"
         android:background="@drawable/et_line2"
         android:ems="10"
-        android:hint="경북대학교 이메일 주소를 입력해주세요. ex)000.knu.ac.kr"
+        android:hint="경북대학교 이메일 주소를 입력해주세요.\n ex)gachi.knu.ac.kr"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

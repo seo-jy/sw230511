@@ -126,7 +126,7 @@ public class HomeActivity extends AppCompatActivity{
         Button call = (Button) findViewById(R.id.call);
         call.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent myIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:1121"));
+                Intent myIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:112"));
                 startActivity(myIntent);
             }
         });
